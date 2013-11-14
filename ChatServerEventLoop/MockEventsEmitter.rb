@@ -1,16 +1,15 @@
-#need to initialize @listeners to {} (empty hash) in whatever class includes this module
-
 module MockEventsEmitter
 
   def on(event, &block)
+    @listeners ||= {}
     listeners = @listeners[event] ||= []
     listeners << block
   end
 
-  def emit(event)
+  def emit(event, args)
     listeners = @listeners[event]
     listeners.each do |listener|
-      listener.call
+      listener.call(args)
     end
   end
 end
