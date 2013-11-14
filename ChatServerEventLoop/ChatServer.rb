@@ -1,3 +1,4 @@
+require 'pry'
 require 'socket'
 require_relative './MockEventsEmitter'
 require_relative './Server'
@@ -9,15 +10,31 @@ class ChatServer
 
   def initialize
     @server = Server.new(TCPServer.new(9393))
-    set_up(@server)
+    set_listeners(@server)
     @users = [@server]
     start_server
   end
 
-  def set_up(server)
+  
+  def set_listeners(server)
     server.on(:accept_new_user) do |client|
-      @users << client
-       client.to_io.write_nonblock("Welcome to the Chatroom.\nType 'exit' to leave.\n")
+      @users << client 
+      client.to_io.write_nonblock("Welcome to the Chatroom.\nType 'exit' to leave.\n")
+      register(client)
+    end
+  end
+  
+  def register(client)
+    client.on(:message) do |user|
+      message = user.to_io.read_nonblock(1000)
+      if message.match(/exit/)
+        user.close
+        @users.delete(user)
+      else
+        @users[1..-1].each do |user|
+          user.to_io.write_nonblock(message)
+        end
+      end
     end
   end
 
