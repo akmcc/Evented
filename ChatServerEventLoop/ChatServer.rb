@@ -1,8 +1,9 @@
 require 'pry'
 require 'socket'
 require_relative './MockEventsEmitter'
-require_relative './Server'
 require_relative './Users'
+require_relative './Server'
+
 
 class ChatServer
 
