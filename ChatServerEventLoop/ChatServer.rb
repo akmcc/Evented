@@ -35,13 +35,13 @@ class ChatServer
         sign_off(current_client)
       else
         clients = @clients.select{ |client| client != current_client }
-        clients.each { |client| client.socket.write_nonblock(message) }
+        clients.each { |client| client.socket.write_nonblock("=> #{message}") }
       end
     end
   end
 
   def sign_off(client)
-    client.close
+    client.socket.close
     @clients.delete(client)
   end
 

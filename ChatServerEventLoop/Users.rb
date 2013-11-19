@@ -1,4 +1,4 @@
-class Users  #clients? 
+class User  #clients? 
 
   include MockEventsEmitter
 
