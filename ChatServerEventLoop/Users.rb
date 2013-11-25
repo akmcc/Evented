@@ -1,8 +1,6 @@
-class User  #clients? 
+class User  #client? 
 
   include MockEventsEmitter
-
-  attr_accessor :socket 
   
   def initialize(socket)
     @socket = socket

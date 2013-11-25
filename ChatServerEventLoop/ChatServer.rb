@@ -23,25 +23,25 @@ class ChatServer
   def set_listeners(server)
     server.on(:accept_new_user) do |client|
       @clients << client 
-      client.socket.write_nonblock("Welcome to the Chatroom.\nType 'exit' to leave.\n")
+      client.to_io.write_nonblock("Welcome to the Chatroom.\nType 'exit' to leave.\n")
       register(client)
     end
   end
   
   def register(client)
     client.on(:message) do |current_client|
-      message = current_client.socket.read_nonblock(1000)
-      if message.match(/exit/)
+      message = current_client.to_io.read_nonblock(1000)
+      if message.match(/exit/) #need to allow exit to be in a sentence
         sign_off(current_client)
       else
-        clients = @clients.select{ |client| client != current_client }
-        clients.each { |client| client.socket.write_nonblock("=> #{message}") }
+        recipients = @clients.select{ |client| client != current_client }
+        recipients.each { |recipient| recipient.to_io.write_nonblock("=> #{message}") }
       end
     end
   end
 
   def sign_off(client)
-    client.socket.close
+    client.to_io.close
     @clients.delete(client)
   end
 
@@ -54,5 +54,7 @@ class ChatServer
     end 
   end
 end
+
+
 
 ChatServer.new
