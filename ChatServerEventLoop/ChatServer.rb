@@ -1,7 +1,7 @@
 require 'pry'
 require 'socket'
 require_relative './MockEventsEmitter'
-require_relative './Users'
+require_relative './Client'
 require_relative './Server'
 
 
@@ -9,8 +9,8 @@ class ChatServer
 
   include MockEventsEmitter
 
-  def initialize
-    @server = Server.new(TCPServer.new(9393))
+  def initialize(host, port)
+    @server = Server.new(TCPServer.new(host, port))
     set_listeners(@server)
     @clients = []
     start_server
@@ -57,4 +57,4 @@ end
 
 
 
-ChatServer.new
+ChatServer.new('0.0.0.0', 9393) #want this to take the host and port, code doesn't yet support it
