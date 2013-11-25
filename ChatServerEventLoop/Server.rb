@@ -1,14 +1,14 @@
 class Server #this is a wrapper for my TCPServer
 
   include MockEventsEmitter
-  
+
   def initialize(socket)
     @socket = socket
   end
 
   def handle_read
     user = @socket.accept
-    emit(:accept_new_user, User.new(user))
+    emit(:accept_new_user, Client.new(user))
   end
 
   def to_io

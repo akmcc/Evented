@@ -1,4 +1,4 @@
-class User  #client? 
+class Client 
 
   include MockEventsEmitter
   
