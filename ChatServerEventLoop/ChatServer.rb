@@ -31,16 +31,20 @@ class ChatServer
   end
   
   def register(client)
-    client.on(:message) do |message, current_client|
-        recipients = @clients.select{ |client| client != current_client }
-        recipients.each { |recipient| recipient.to_io.write_nonblock("=> #{message}") }
-      end
+    client.on(:message) do |message, sender|
+      forward_message(message, sender)
+    end
 
     client.on(:sign_out) do |clients|
       clients.each do |client|
         sign_out(client)
       end
     end
+  end
+
+  def forward_message(message, sender)
+    recipients = @clients.select{ |client| client != sender }
+    recipients.each { |recipient| recipient.to_io.write_nonblock("=> #{message}") }
   end
 
   def sign_out(client)
