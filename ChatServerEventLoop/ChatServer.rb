@@ -3,17 +3,14 @@ require 'socket'
 require_relative './MockEventsEmitter'
 require_relative './Client'
 require_relative './Server'
-
+require_relative './EventLoop'
 
 class ChatServer
 
   include MockEventsEmitter
 
-  def initialize(host, port)
-    @server = Server.new(TCPServer.new(host, port))
-    set_listeners(@server)
+  def initialize
     @clients = []
-    start_server
   end
 
   def users
@@ -24,7 +21,7 @@ class ChatServer
     server.on(:accept_new_user) do |clients|
       clients.each do |client|
         @clients << client 
-        client.to_io.write_nonblock("Welcome to the Chatroom.\nType 'exit' to leave.\n")
+        welcome(client)
         register(client)
       end
     end
@@ -52,6 +49,10 @@ class ChatServer
     @clients.delete(client)
   end
 
+  def welcome(client)
+    client.to_io.write_nonblock("Welcome to the Chatroom.\nType 'exit' to leave.\n")
+  end
+
   def start_server
     loop do
       readables, _ = IO.select(users)
@@ -62,6 +63,10 @@ class ChatServer
   end
 end
 
+loop = EventLoop.new
 
+chatter = ChatServer.new
 
-ChatServer.new('0.0.0.0', 9393) #want this to take the host and port, code doesn't yet support it
+chatter.set_listeners(loop.monitor('0.0.0.0', 9393)) 
+
+loop.start

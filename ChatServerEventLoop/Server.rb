@@ -1,3 +1,5 @@
+require './MockEventsEmitter'
+
 class Server #this is a wrapper for my TCPServer
 
   include MockEventsEmitter
