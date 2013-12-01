@@ -50,10 +50,3 @@ class ChatServer
 
 end
 
-loop = EventLoop.new
-
-chatter = ChatServer.new
-
-chatter.set_listeners(loop.monitor('0.0.0.0', 9393)) 
-
-loop.start
