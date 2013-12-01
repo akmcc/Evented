@@ -6,7 +6,7 @@ module MockEventsEmitter
     listeners << block
   end
 
-  def emit(event, *args)
+  def emit(event, args)
     listeners = @listeners[event]
     listeners.each do |listener|
       listener.call(args)

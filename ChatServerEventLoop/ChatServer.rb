@@ -18,12 +18,10 @@ class ChatServer
   end
   
   def set_listeners(server)
-    server.on(:accept_new_user) do |clients|
-      clients.each do |client|
+    server.on(:accept) do |client|
         @clients << client 
         welcome(client)
         register(client)
-      end
     end
   end
   
@@ -32,10 +30,8 @@ class ChatServer
       forward_message(message, sender)
     end
 
-    client.on(:sign_out) do |clients|
-      clients.each do |client|
+    client.on(:close) do |client|
         sign_out(client)
-      end
     end
   end
 
@@ -45,22 +41,13 @@ class ChatServer
   end
 
   def sign_out(client)
-    client.to_io.close
     @clients.delete(client)
   end
 
   def welcome(client)
-    client.to_io.write_nonblock("Welcome to the Chatroom.\nType 'exit' to leave.\n")
+    client.to_io.write_nonblock("Welcome to the Chatroom.\nType 'exit!' to leave.\n")
   end
 
-  def start_server
-    loop do
-      readables, _ = IO.select(users)
-      readables.each do |socket|
-        socket.handle_read
-      end
-    end 
-  end
 end
 
 loop = EventLoop.new

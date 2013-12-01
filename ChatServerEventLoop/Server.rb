@@ -1,4 +1,5 @@
 require './MockEventsEmitter'
+require_relative './EventLoop'
 
 class Server #this is a wrapper for my TCPServer
 
@@ -9,8 +10,9 @@ class Server #this is a wrapper for my TCPServer
   end
 
   def handle_read
-    user = @socket.accept
-    emit(:accept_new_user, Client.new(user))
+    user = Client.new(@socket.accept)
+    emit(:accept, user)
+    
   end
 
   def to_io

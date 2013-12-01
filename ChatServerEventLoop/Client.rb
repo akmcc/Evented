@@ -8,10 +8,11 @@ class Client
 
   def handle_read 
     message = to_io.read_nonblock(1000) 
-    if message.match(/exit/) #need to allow exit to be in a sentence
-      emit(:sign_out, self)
+    if message.downcase.match(/\Aexit\!/) 
+      emit(:close, self)
+      to_io.close
     else
-      emit(:message, message, self)
+      emit(:message, [message, self]) 
     end
   end
 
