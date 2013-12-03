@@ -1,5 +1,4 @@
-require './MockEventsEmitter'
-require_relative './EventLoop'
+require_relative './Client'
 
 class Server #this is a wrapper for my TCPServer
 

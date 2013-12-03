@@ -1,8 +1,5 @@
-require 'pry'
 require 'socket'
 require_relative './MockEventsEmitter'
-require_relative './Client'
-require_relative './Server'
 require_relative './EventLoop'
 
 class ChatServer
@@ -12,20 +9,16 @@ class ChatServer
   def initialize
     @clients = []
   end
-
-  def users
-    [@server] + @clients
-  end
   
   def set_listeners(server)
     server.on(:accept) do |client|
         @clients << client 
         welcome(client)
-        register(client)
+        listen_to(client)
     end
   end
   
-  def register(client)
+  def listen_to(client)
     client.on(:message) do |message, sender|
       forward_message(message, sender)
     end

@@ -1,7 +1,6 @@
 
 require 'socket'
 require_relative './Server'
-require_relative './Client'
 require_relative './MockEventsEmitter'
 
 
