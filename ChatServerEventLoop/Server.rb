@@ -14,6 +14,7 @@ class Server #this is a wrapper for my TCPServer
     
   end
 
+  #IO.select requires the objects to have a to_io method
   def to_io
     @socket
   end

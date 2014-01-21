@@ -37,8 +37,6 @@ class EventLoop
       readables.each do |socket|
         socket.handle_read
       end
-      #need to be collecting writables as well
     end 
   end
-
 end
